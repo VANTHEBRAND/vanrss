@@ -112,7 +112,7 @@ function MediaUploader(
 function UrlEditor({url, onUpdateUrl}) {
   const bookmarkletCode = `javascript:window.location=%22${ADMIN_URLS.newItem(getPublicBaseUrl())}?media_category=external_url&` +
     'media_url=%22+encodeURIComponent(document.location)+%22&title=%22+encodeURIComponent(document.title)';
-  const bookmarklet = `<a href="${bookmarkletCode}" onclick="return false" rel="nofollow">to microfeed</a>`;
+  const bookmarklet = `<a href="${bookmarkletCode}" onclick="return false" rel="nofollow">to vanfeed</a>`;
   return (<div>
     <AdminInput
       placeholder="e.g., https://www.nytimes.com/2022/11/13/us/politics/senate-democrats-republicans.html"
@@ -123,7 +123,7 @@ function UrlEditor({url, onUpdateUrl}) {
     />
     <details className="mt-4 text-helper-color">
       <summary className="hover:opacity-50 text-sm cursor-pointer">
-        Bookmarklet: add a "to microfeed" button to browser
+        Bookmarklet: add a "to vanfeed" button to browser
       </summary>
       <div className="mt-4 text-sm">
         Drag this link to your browser, so you can easily curate web pages here -

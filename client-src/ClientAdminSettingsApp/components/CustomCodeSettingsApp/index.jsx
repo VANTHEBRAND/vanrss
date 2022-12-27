@@ -43,7 +43,7 @@ export default class CustomCodeSettingsApp extends React.Component {
           text="Edit web and rss styling"
         />
         <div className="text-xs text-muted-color mt-2">
-          <em>microfeed will support multiple themes / templates in the future</em>
+          <em>vanfeed will support multiple themes / templates in the future</em>
         </div>
       </div>
     </SettingsBase>);
