@@ -1,8 +1,8 @@
 # vanfeed: a lightweight cms self-hosted on cloudflare based on microfeed
 
-[<img src="https://github.com/VANTHEBRAND/vanrss/blob/main/public/assets/brands/microfeed/horizontal-logo.png?raw=true" width=400 alt="microfeed: a lightweight self-hosted CMS on Cloudflare" />](https://www.microfeed.org/)
+[<img src="https://github.com/VANTHEBRAND/vanrss/blob/main/public/assets/brands/microfeed/horizontal-logo.png?raw=true" width=400 alt="microfeed: a lightweight self-hosted CMS on Cloudflare" />](https://rss.van.link/)
 
-[![Deploy to Cloudflare Pages](https://github.com/microfeed/microfeed/actions/workflows/deploy.yml/badge.svg?event=workflow_dispatch)](https://github.com/microfeed/microfeed/actions/workflows/deploy.yml)
+[![Deploy to Cloudflare Pages](https://github.com/microfeed/microfeed/actions/workflows/deploy.yml/badge.svg?event=workflow_dispatch)](https://github.com/VANTHEBRAND/vanfeed/actions/workflows/deploy.yml)
 [![Email microfeed](https://img.shields.io/badge/Email-support%40microfeed.org-blue)](mailto:support@microfeed.org)
 [![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://www.microfeed.org/i/introducing-microfeed-self-hosted-cms-on-cloudflare-opensource-serverless-free-uhbQEmArlC2/)
 
@@ -27,7 +27,7 @@ If you have any questions or feedback, please don't hesitate to reach out to mic
     * [Step 3. Run GitHub Action to deploy code](#step-3-run-github-action-to-deploy-code)
     * [Step 4. Make a few clicks on Cloudflare dashboard](#step-4-make-a-few-clicks-on-cloudflare-dashboard)
     * [Step 5. Done. Start publishing!](#step-5-done-start-publishing-)
-    * [Bonus. Update to the latest version of microfeed](#bonus-update-to-the-latest-version-of-microfeed)
+    * [Bonus. Update to the latest version of vanfeed](#bonus-update-to-the-latest-version-of-microfeed)
   * [FAQs](#faqs)
   * [Contributions](#contributions)
     * [Run vanfeed on local](#run-microfeed-on-local)
@@ -54,7 +54,7 @@ vanfeed uses Cloudflare [Pages](https://pages.cloudflare.com/) to host and run t
 [D1](https://developers.cloudflare.com/d1/) to store metadata,
 and [Zero Trust](https://www.cloudflare.com/products/zero-trust/) to provide logins to the admin dashboard.
 Cloudflare provides very generous free usage quotas, making it an affordable solution for personal or small business use.
-While you will still need to pay for a domain name, hosting microfeed on Cloudflare is essentially free.
+While you will still need to pay for a domain name, hosting vanfeed on Cloudflare is essentially free.
 
 With vanfeed, you can publish a variety of content such as audios, videos, photos, documents, blog posts,
 and external URLs to a customizable website, an RSS feed, and a [JSON feed](https://www.jsonfeed.org/).
@@ -73,15 +73,15 @@ upload media files, and customize web page styles. If you've used WordPress befo
 
 Roughly you'll follow these steps to install a vanfeed instance to Cloudflare:
 
-1. Fork the [microfeed repo](https://github.com/microfeed/microfeed) to your personal (or organizational) GitHub account.
+1. Fork the [vanfeed repo](https://github.com/VANTHEBRAND/vanrss) to your personal (or organizational) GitHub account.
 2. Obtain Cloudflare API tokens and save them as secrets on your forked GitHub repository.
 3. Use the predefined GitHub Action in your forked repository to deploy the code to Cloudflare Pages, using the secrets from step 2.
 4. Make a few clicks on Cloudflare's dashboard to set up custom domains and configure some security settings.
 5. Done. Start publishing!
 
 > We understand that not everyone is comfortable with reading documentation, so we've made it as easy as possible
-> to get started with microfeed. However, we'd love to see Cloudflare implement a "Login with Cloudflare" OAuth feature,
-> which would allow for almost one-click deployment of microfeed. In the meantime, we've tried to make the setup process
+> to get started with vanfeed. However, we'd love to see Cloudflare implement a "Login with Cloudflare" OAuth feature,
+> which would allow for almost one-click deployment of vanfeed. In the meantime, we've tried to make the setup process
 > as straightforward as possible for tech-savvy users.
 
 
@@ -195,7 +195,7 @@ You can access the site via ${CLOUDFLARE_PROJECT_NAME}.pages.dev, for example, [
 
 ### Step 4. Make a few clicks on Cloudflare dashboard
 
-To manage your microfeed instance, you'll use the admin dashboard at ${CLOUDFLARE_PROJECT_NAME}.pages.dev/admin, for example, [https://microfeed-org.pages.dev/admin/](https://microfeed-org.pages.dev/admin/) (the admin dashboard needs to be protected by Cloudflare Zero Trust).
+To manage your vanfeed instance, you'll use the admin dashboard at ${CLOUDFLARE_PROJECT_NAME}.pages.dev/admin, for example, [https://microfeed-org.pages.dev/admin/](https://microfeed-org.pages.dev/admin/) (the admin dashboard needs to be protected by Cloudflare Zero Trust).
 
 Upon accessing the admin dashboard for the first time, you'll complete the setup process by following the checklist:
 
@@ -229,14 +229,14 @@ Then go to [Actions -> Deploy to Cloudflare Pages](../../actions/workflows/deplo
 <details>
 <summary><b>How can I track podcast / video / image downloads?</b></summary>
 
-To track podcast, video, or image downloads with microfeed, you can use the tracking URLs feature.
+To track podcast, video, or image downloads with vanfeed, you can use the tracking URLs feature.
 This allows you to set up third-party tracking URLs for your media files, such as those provided by Podtrac or Chartable.
 
 To set up tracking URLs, you will need to go to Settings / Tracking URLs:
 <img width="1101" alt="Screenshot 2022-12-17 at 10 19 50 AM" src="https://user-images.githubusercontent.com/1719237/208216098-1c8ab8df-eeae-4e50-96c8-4347911ee281.png">
 
 From there, you can add the third-party tracking URLs that you want to use.
-microfeed will automatically add these URLs to the front of the URL for your media files, allowing you to track download statistics.
+vanfeed will automatically add these URLs to the front of the URL for your media files, allowing you to track download statistics.
 
 This is a [common practice in the podcast industry](https://lowerstreet.co/blog/podcast-tracking) and can be a useful way to monitor the performance of your content and understand how it is being consumed by your audience.
 
@@ -250,7 +250,7 @@ If you'd like to submit a fix or new feature, please create a pull request with 
 
 ### Run vanfeed on local
 
-First, create a .vars.toml file in microfeed's root directory (same level as this README.md file) and put 5 secrets in the .vars.toml file (Similar to [Step 2. Put some secrets on your forked repo](#step-2-put-some-secrets-on-your-forked-repo)):
+First, create a .vars.toml file in vanfeed's root directory (same level as this README.md file) and put 5 secrets in the .vars.toml file (Similar to [Step 2. Put some secrets on your forked repo](#step-2-put-some-secrets-on-your-forked-repo)):
 ```toml
 # .vars.toml
 CLOUDFLARE_PROJECT_NAME = "your-project-org"
@@ -266,7 +266,8 @@ Second, run local dev server:
 npm run dev
 ```
 
-You should be able to access to a local microfeed instance via http://127.0.0.1:8788/.
+You should be able to access to a local vanfeed instance via http://127.0.0.1:8788/.
 
 ## License
-microfeed is licensed under the [AGPL-3.0](https://github.com/microfeed/microfeed/blob/main/LICENSE) license. Please see [the LICENSE file](https://github.com/microfeed/microfeed/blob/main/LICENSE) for more information. vanfeed is under the same license so just read that and pretend every time it says microfeed it says vanfeed.
+microfeed is licensed under the [AGPL-3.0](https://github.com/microfeed/microfeed/blob/main/LICENSE) license. Please see [the LICENSE file](https://github.com/microfeed/microfeed/blob/main/LICENSE) for more information. 
+vanfeed is under the same license so just read that and pretend every time it says microfeed it says vanfeed.
