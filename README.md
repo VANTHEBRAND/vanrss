@@ -1,28 +1,28 @@
-# microfeed: a lightweight cms self-hosted on cloudflare
+# vanfeed: a lightweight cms self-hosted on cloudflare based on microfeed
 
-[<img src="https://user-images.githubusercontent.com/1719237/207514210-99ddbd03-f8f0-410a-96c8-80da1afb804d.png" width=400 alt="microfeed: a lightweight self-hosted CMS on Cloudflare" />](https://www.microfeed.org/)
+[<img src="https://github.com/VANTHEBRAND/vanrss/blob/main/public/assets/brands/microfeed/horizontal-logo.png?raw=true" width=400 alt="microfeed: a lightweight self-hosted CMS on Cloudflare" />](https://www.microfeed.org/)
 
 [![Deploy to Cloudflare Pages](https://github.com/microfeed/microfeed/actions/workflows/deploy.yml/badge.svg?event=workflow_dispatch)](https://github.com/microfeed/microfeed/actions/workflows/deploy.yml)
-[![Email us](https://img.shields.io/badge/Email-support%40microfeed.org-blue)](mailto:support@microfeed.org)
+[![Email microfeed](https://img.shields.io/badge/Email-support%40microfeed.org-blue)](mailto:support@microfeed.org)
 [![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://www.microfeed.org/i/introducing-microfeed-self-hosted-cms-on-cloudflare-opensource-serverless-free-uhbQEmArlC2/)
 
-Welcome to microfeed, a lightweight content management system (CMS) self-hosted on Cloudflare.
-With microfeed, you can easily publish a variety of content such as audios, videos, photos, documents, blog posts,
+Welcome to vanfeed, a lightweight content management system (CMS) self-hosted on Cloudflare and based on microfeed.
+With vanfeed, van can easily publish a variety of content such as audios, videos, photos, documents, blog posts,
 and external URLs to a feed in the form of web, RSS, and JSON. It's the perfect solution for tech-savvy individuals who
 want to self-host their own CMS without having to run their own servers.
 
-microfeed is built by [Listen Notes](https://www.listennotes.com/) and is hosted on Cloudflare's [Pages](https://pages.cloudflare.com/),
+vanfeed is built by VAN BRAND based on microfeed which is built by [Listen Notes](https://www.listennotes.com/) and is hosted on Cloudflare's [Pages](https://pages.cloudflare.com/),
 [R2](https://www.cloudflare.com/products/r2/), [D1](https://developers.cloudflare.com/d1/), and [Zero Trust](https://www.cloudflare.com/products/zero-trust/).
 
-If you have any questions or feedback, please don't hesitate to reach out to us at support@microfeed.org. We'd love to hear from you!
+If you have any questions or feedback, please don't hesitate to reach out to microfeed at support@microfeed.org. They'd love to hear from you!
 
 **Table of contents**
 <!-- TOC -->
-* [microfeed: a lightweight cms self-hosted on cloudflare](#microfeed--a-lightweight-cms-self-hosted-on-cloudflare)
+* [vanfeed: a lightweight cms self-hosted on cloudflare](#microfeed--a-lightweight-cms-self-hosted-on-cloudflare)
   * [How it works](#how-it-works)
   * [Installation](#installation)
     * [Prerequisites](#prerequisites)
-    * [Step 1. Fork the microfeed repo to your GitHub](#step-1-fork-the-microfeed-repo-to-your-github)
+    * [Step 1. Fork the vanfeed repo to your GitHub](#step-1-fork-the-microfeed-repo-to-your-github)
     * [Step 2. Put some secrets on your forked repo](#step-2-put-some-secrets-on-your-forked-repo)
     * [Step 3. Run GitHub Action to deploy code](#step-3-run-github-action-to-deploy-code)
     * [Step 4. Make a few clicks on Cloudflare dashboard](#step-4-make-a-few-clicks-on-cloudflare-dashboard)
@@ -30,7 +30,7 @@ If you have any questions or feedback, please don't hesitate to reach out to us 
     * [Bonus. Update to the latest version of microfeed](#bonus-update-to-the-latest-version-of-microfeed)
   * [FAQs](#faqs)
   * [Contributions](#contributions)
-    * [Run microfeed on local](#run-microfeed-on-local)
+    * [Run vanfeed on local](#run-microfeed-on-local)
   * [License](#license)
 <!-- TOC -->
 
@@ -39,7 +39,7 @@ If you have any questions or feedback, please don't hesitate to reach out to us 
 Since the 1990s, a significant portion of the web has been powered by feeds.
 People (and bots) publish items to a feed, and others can subscribe to that feed to receive new content.
 
-microfeed makes it easy for individuals to self-host their own feed on Cloudflare, including but not limited to
+vanfeed makes it easy for individuals to self-host their own feed on Cloudflare, including but not limited to
 * a podcast feed of audios
 * a blog feed of posts
 * an Instagram-like feed of images (e.g., [llamacorn.listennotes.com](https://llamacorn.listennotes.com/))
@@ -49,21 +49,21 @@ microfeed makes it easy for individuals to self-host their own feed on Cloudflar
 * a marketing site with updates and press coverage (e.g., [microfeed.org](https://www.microfeed.org/))
 * ...
 
-microfeed uses Cloudflare [Pages](https://pages.cloudflare.com/) to host and run the code,
+vanfeed uses Cloudflare [Pages](https://pages.cloudflare.com/) to host and run the code,
 [R2](https://www.cloudflare.com/products/r2/) to host and serve media files,
 [D1](https://developers.cloudflare.com/d1/) to store metadata,
 and [Zero Trust](https://www.cloudflare.com/products/zero-trust/) to provide logins to the admin dashboard.
 Cloudflare provides very generous free usage quotas, making it an affordable solution for personal or small business use.
 While you will still need to pay for a domain name, hosting microfeed on Cloudflare is essentially free.
 
-With microfeed, you can publish a variety of content such as audios, videos, photos, documents, blog posts,
+With vanfeed, you can publish a variety of content such as audios, videos, photos, documents, blog posts,
 and external URLs to a customizable website, an RSS feed, and a [JSON feed](https://www.jsonfeed.org/).
-Check out some examples of microfeed in action:
+Check out some examples of microfeed (which vanfeed is based on) in action:
 * Web feed: [https://llamacorn.listennotes.com/](https://llamacorn.listennotes.com/)
 * Rss feed: [https://llamacorn.listennotes.com/rss/](https://llamacorn.listennotes.com/rss/)
 * Json feed: [https://llamacorn.listennotes.com/json/](https://llamacorn.listennotes.com/json/)
 
-microfeed provides a simple yet powerful admin dashboard that makes it easy to add items to the feed,
+vanfeed provides a simple yet powerful admin dashboard that makes it easy to add items to the feed,
 upload media files, and customize web page styles. If you've used WordPress before, you'll find it familiar.
 
 ![image-6d056193c81c0b8f5de0503f5af18116](https://user-images.githubusercontent.com/1719237/209486588-00acefe0-dd51-4bfc-aed7-1f63850aa720.png)
@@ -71,7 +71,7 @@ upload media files, and customize web page styles. If you've used WordPress befo
 
 ## Installation
 
-Roughly you'll follow these steps to install a microfeed instance to Cloudflare:
+Roughly you'll follow these steps to install a vanfeed instance to Cloudflare:
 
 1. Fork the [microfeed repo](https://github.com/microfeed/microfeed) to your personal (or organizational) GitHub account.
 2. Obtain Cloudflare API tokens and save them as secrets on your forked GitHub repository.
@@ -90,17 +90,17 @@ Roughly you'll follow these steps to install a microfeed instance to Cloudflare:
 * Have a Cloudflare account. If you don't have one already, you can [sign up for free at Cloudflare.com](https://dash.cloudflare.com/sign-up).
 * Have a GitHub account. If you don't have one, you can [sign up for free at GitHub.com](https://github.com/signup).
 
-### Step 1. Fork the microfeed repo to your GitHub
+### Step 1. Fork the vanfeed repo to your GitHub
 
-Simply click on [https://github.com/microfeed/microfeed/fork](https://github.com/microfeed/microfeed/fork) to fork the repository.
+Simply click on [https://github.com/VANTHEBRAND/vanrss/fork](https://github.com/VANTHEBRAND/vanrss) to fork the repository.
 
-You may choose to modify the code in your forked repository in the future, but it's likely that you won't need to
-touch the code at all. Simply fork the repository and keep it synced for future use.
+You may choose to modify the code in your forked repository in the future, van has customized it for himself so
+you probably will have to. Simply fork the repository and keep it synced for future use.
 
 ### Step 2. Put some secrets on your forked repo
 
 Go to your forked repo's [Settings -> Secrets -> Actions](../../settings/secrets/actions), and create 5 secrets (click for more details).
-With these secrets in place, you'll be able to use GitHub Actions to deploy your microfeed instance to Cloudflare Pages.
+With these secrets in place, you'll be able to use GitHub Actions to deploy your vanfeed instance to Cloudflare Pages.
 
 <details>
   <summary><b>CLOUDFLARE_ACCOUNT_ID</b></summary>
@@ -203,7 +203,7 @@ Upon accessing the admin dashboard for the first time, you'll complete the setup
 
 ### Step 5. Done. Start publishing!
 
-Once you've completed the setup process, your microfeed instance will be ready to use.
+Once you've completed the setup process, your vanfeed instance will be ready to use.
 You can add, update, or delete items from the admin dashboard.
 
 You can also customize the appearance of the website at Settings / Custom code by editing the raw HTML and CSS:
@@ -211,9 +211,9 @@ You can also customize the appearance of the website at Settings / Custom code b
 <img width="1094" alt="Screenshot 2022-12-26 at 1 15 57 PM" src="https://user-images.githubusercontent.com/1719237/209499220-a2f7b7e4-f0b0-422a-bdf2-2ffed4b37aff.png">
 
 
-### Bonus. Update to the latest version of microfeed
+### Bonus. Update to the latest version of vanfeed
 
-We'll continue to add new features and fix bugs in this microfeed repo.
+vanfeed will continue to add new features and fix bugs and add fetures and bug fixes from the microfeed repo.
 You may want to update your forked repo with the new code.
 
 You'll first sync up the code in your forked repo:
@@ -242,51 +242,13 @@ This is a [common practice in the podcast industry](https://lowerstreet.co/blog/
 
 </details>
 
-<details>
-<summary><b>Why Cloudflare? Isn't it dangerous to trust a for-profit company?</b></summary>
-
-Many individuals and organizations trust and use Cloudflare's services because it has a reputation for providing reliable and effective services.
-We ([Listen Notes](https://www.listennotes.com/)) have been using Cloudflare for many years.
-
-It's convenient to manage all things on a one-stop platform like Cloudflare (e.g., DNS, Cache, firewall, running code, CDN, trustless logins...).
-
-microfeed is still in open alpha phase. Cloudflare is the first platform we support.
-We may consider supporting other serverless platforms, so you can easily migrate away if needed.
-</details>
-
-
-<details>
-<summary><b>What if Cloudflare de-platforms my microfeed instance?</b></summary>
-
-It is important to carefully review the terms of service for any service that you use, including Cloudflare.
-It is possible that if you violate the terms of service, the service may take action, such as de-platforming your instance.
-
-To protect against the possibility of being de-platformed, it is a good idea to regularly backup your data from Cloudflare.
-This will allow you to recover your contents and potentially migrate them to a different platform if necessary.
-It is also a good idea to use your own custom domain, as this will give you more control over your content and make it easier to move your data to a different platform if needed.
-</details>
-
-
-<details>
-<summary><b>Why should I use microfeed?</b></summary>
-
-If you are already using Cloudflare and are satisfied with its services, then using microfeed may be a good option for you.
-
-If you don't want to manage your own servers, microfeed can be a convenient alternative that allows you to take advantage of
-Cloudflare's infrastructure and security features.
-
-If you don't want to pay for servers, microfeed can be a cost-effective solution, as Cloudflare provides generous free usage quotas.
-
-If you are looking for something new and are interested in exploring different options, microfeed could be a good choice to consider.
-It is always a good idea to carefully evaluate any service before using it to ensure that it meets your needs and is a good fit for your use case.
-</details>
 
 ## Contributions
-We welcome contributions to microfeed!
-If you have an idea for a new feature or have found a bug, please [open an issue](https://github.com/microfeed/microfeed/issues/new) in the repository.
+We welcome contributions to vanfeed!
+If you have an idea for a new feature or have found a bug, please [open an issue](https://github.com/VANTHEBRAND/vanfeed/issues/new) in the repository.
 If you'd like to submit a fix or new feature, please create a pull request with a detailed description of your changes.
 
-### Run microfeed on local
+### Run vanfeed on local
 
 First, create a .vars.toml file in microfeed's root directory (same level as this README.md file) and put 5 secrets in the .vars.toml file (Similar to [Step 2. Put some secrets on your forked repo](#step-2-put-some-secrets-on-your-forked-repo)):
 ```toml
@@ -307,4 +269,4 @@ npm run dev
 You should be able to access to a local microfeed instance via http://127.0.0.1:8788/.
 
 ## License
-microfeed is licensed under the [AGPL-3.0](https://github.com/microfeed/microfeed/blob/main/LICENSE) license. Please see [the LICENSE file](https://github.com/microfeed/microfeed/blob/main/LICENSE) for more information.
+microfeed is licensed under the [AGPL-3.0](https://github.com/microfeed/microfeed/blob/main/LICENSE) license. Please see [the LICENSE file](https://github.com/microfeed/microfeed/blob/main/LICENSE) for more information. vanfeed is under the same license so just read that and pretend every time it says microfeed it says vanfeed.
