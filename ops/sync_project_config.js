@@ -4,8 +4,9 @@ const {VarsReader, WranglerCmd} = require('./lib/utils');
 const ALLOWED_VARS = [
   {name: 'CLOUDFLARE_ACCOUNT_ID', encrypted: true},
   {name: 'CLOUDFLARE_PROJECT_NAME', encrypted: true},
-  {name: 'CLOUDFLARE_API_TOKEN', encrypted: true},
   {name: 'DEPLOYMENT_ENVIRONMENT', encrypted: false},
+  {name: 'CF_ACCESS_ISSUER', encrypted: false},
+  {name: 'CF_ACCESS_AUD', encrypted: false},
 
   {name: 'R2_ACCESS_KEY_ID', encrypted: true},
   {name: 'R2_SECRET_ACCESS_KEY', encrypted: true},
@@ -19,7 +20,7 @@ class SyncProjectConfig {
   constructor() {
     this.currentEnv = process.env.DEPLOYMENT_ENVIRONMENT || 'production';
     this.v = new VarsReader(this.currentEnv);
-    this.cmd = new WranglerCmd(process.env.DEPLOYMENT_ENVIRONMENT || 'development');
+    this.cmd = new WranglerCmd(this.currentEnv);
   }
 
   _getEnvVarsFromFilesJson(envName, databaseId) {
@@ -45,6 +46,10 @@ class SyncProjectConfig {
         'type': varDict.encrypted ? 'secret_text' : 'plain_text',
       };
     });
+    // GitHub direct uploads use the deploy token only in CI. Remove the legacy runtime binding.
+    envVarsJson[envName].env_vars.CLOUDFLARE_API_TOKEN = process.env.GITHUB_ACTIONS === 'true'
+      ? null
+      : {type: 'secret_text', value: this.v.get('CLOUDFLARE_API_TOKEN')};
     return envVarsJson;
   }
 
@@ -62,31 +67,23 @@ class SyncProjectConfig {
     };
 
     const req = https.request(options, (res) => {
-      // console.log('statusCode:', res.statusCode);
-      // console.log('headers:', res.headers);
       let body = '';
-      res.on('data', (d) => {
-        // d.result.deployment_configs.preview
-        // d.result.deployment_configs.production
-        // process.stdout.write(d);
-        // onSuccess(d);
-        body += d;
-      });
-      res.on("end", () => {
+      res.on('data', (chunk) => { body += chunk; });
+      res.on('end', () => {
+        let json;
         try {
-          let json = JSON.parse(body);
-          onSuccess(json);
-        } catch (error) {
-          console.error(error.message);
-          process.exit(1);
+          json = JSON.parse(body);
+        } catch {
+          throw new Error('Invalid Cloudflare project configuration response');
         }
+        if (res.statusCode !== 200 || !json.success) {
+          throw new Error(`Cloudflare project configuration failed (HTTP ${res.statusCode})`);
+        }
+        onSuccess();
       });
     });
 
-    req.on('error', (e) => {
-      console.error(e);
-      process.exit(1);
-    });
+    req.on('error', () => { throw new Error('Cloudflare project configuration request failed'); });
     req.write(data)
     req.end();
   }
@@ -95,20 +92,15 @@ class SyncProjectConfig {
     console.log(`Sync-ing for [${this.currentEnv}]...`);
 
     this.cmd.getDatabaseId((databaseId) => {
-      console.log('Database id (num of chars): ', databaseId.length)
+      if (!databaseId) throw new Error('Feed database missing for the selected environment');
       const varsToAddOrUpdate = JSON.stringify({
         'deployment_configs': {
           ...this._getEnvVarsFromFilesJson(this.currentEnv, databaseId),
         },
       });
 
-      this._updateEnvVars(varsToAddOrUpdate, (json) => {
-        console.log(`Successfully synced for [${this.currentEnv}]!`);
-        if (json.result && json.result.deployment_configs) {
-          console.log(json.result.deployment_configs[this.currentEnv].env_vars);
-        } else if (json) {
-          console.log(json);
-        }
+      this._updateEnvVars(varsToAddOrUpdate, () => {
+        console.log(`Updated Pages configuration for ${this.currentEnv}.`);
       });
     });
   }

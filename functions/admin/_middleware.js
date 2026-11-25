@@ -3,6 +3,8 @@ import FeedDb, {getFetchItemsParams} from "../../edge-src/models/FeedDb";
 import OnboardingChecker from "../../common-src/OnboardingUtils";
 import {STATUSES} from "../../common-src/Constants";
 
+import requireAdminAccess from "../../edge-src/common/requireAdminAccess";
+
 async function fetchFeed({request, next, env, data}) {
   const urlObj = new URL(request.url);
 
@@ -40,4 +42,4 @@ async function fetchFeed({request, next, env, data}) {
   return next();
 }
 
-export const onRequest = [fetchFeed];
+export const onRequest = [requireAdminAccess, fetchFeed];

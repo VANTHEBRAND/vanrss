@@ -25,16 +25,16 @@ class SetupR2 {
       // ACL: 'public-read',
     };
 
-    this.s3.createBucket(bucketParams, function (err, data) {
+    this.s3.createBucket(bucketParams, function (err) {
       if (err) {
         if (err.code === 'BucketAlreadyOwnedByYou') {
           console.log(`Bucket exists: ${bucket}`);
         } else {
-          console.log("Error", err);
+          console.error("Could not create R2 bucket");
           process.exit(1);
         }
       } else {
-        console.log(`Success: ${bucket} created`, data.Location);
+        console.log(`Created bucket ${bucket}`);
       }
       onDone();
     });
@@ -53,13 +53,12 @@ class SetupR2 {
     };
 
     console.log(`Setting up CORS rules for ${this.v.get('R2_PUBLIC_BUCKET')}...`)
-    this.s3.putBucketCors(params, (err, data) => {
+    this.s3.putBucketCors(params, (err) => {
       if (err) {
-        console.log(err);
+        console.error("Could not configure R2 bucket CORS");
         process.exit(1);
       } else {
-        console.log('Success!', data);
-        console.log(params.CORSConfiguration.CORSRules);
+        console.log('Updated R2 bucket CORS.');
       }
     });
   }

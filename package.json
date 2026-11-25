@@ -8,7 +8,7 @@
         "setup:development": "yarn install && node ops/generate_local_vars.js && node ops/init_feed_db.js",
         "setup:production": "sh ops/generate_vars_toml.sh && yarn install && node ops/init_r2.js && node ops/init_feed_db.js && node ops/init_project.js",
         "deploy:cloudflare": "node ops/sync_project_config.js && yarn build:production",
-        "deploy:github": "node ops/sync_project_config.js && node ops/direct_upload.js",
+        "deploy:github": "yarn build:production && node ops/sync_project_config.js && node ops/direct_upload.js",
         "test": "jest"
     },
     "dependencies": {
@@ -23,6 +23,7 @@
         "fast-xml-parser": "^4.0.11",
         "html-to-text": "^8.2.1",
         "jest": "25",
+        "jose": "6.2.18",
         "lz-string": "^1.4.4",
         "mustache": "^4.2.0",
         "quill-blot-formatter": "^1.0.5",
