@@ -1,0 +1,21 @@
+name: Test admin access
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  admin-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - run: yarn install --frozen-lockfile --ignore-scripts --non-interactive
+      - run: node --test tests/admin-access.js
