@@ -23,6 +23,7 @@
         "fast-xml-parser": "^4.0.11",
         "html-to-text": "^8.2.1",
         "jest": "25",
+        "jose": "6.2.18",
         "lz-string": "^1.4.4",
         "mustache": "^4.2.0",
         "quill-blot-formatter": "^1.0.5",

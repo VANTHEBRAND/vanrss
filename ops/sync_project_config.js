@@ -6,6 +6,8 @@ const ALLOWED_VARS = [
   {name: 'CLOUDFLARE_PROJECT_NAME', encrypted: true},
   {name: 'CLOUDFLARE_API_TOKEN', encrypted: true},
   {name: 'DEPLOYMENT_ENVIRONMENT', encrypted: false},
+  {name: 'CF_ACCESS_ISSUER', encrypted: false},
+  {name: 'CF_ACCESS_AUD', encrypted: false},
 
   {name: 'R2_ACCESS_KEY_ID', encrypted: true},
   {name: 'R2_SECRET_ACCESS_KEY', encrypted: true},

@@ -182,6 +182,8 @@ In total, you'll add 5 secrets for GitHub Actions:
 
 ### Step 3. Run GitHub Action to deploy code
 
+Before deploying, configure a Cloudflare Access self-hosted application for the admin path and its descendants on every production hostname, including the Pages project domain and custom domains. Protect preview deployments, branch aliases, and deployment-specific hostnames with an admin-only Access policy as well. In each GitHub deployment environment, set the variables `CF_ACCESS_ISSUER` (the team origin, such as `https://your-team.cloudflareaccess.com`) and `CF_ACCESS_AUD` (the Access application audience for that environment). Use the same names in `.vars.toml` for a local setup. Each environment accepts assertions from its configured application only. Missing bindings keep all admin handlers closed.
+
 Go to [Actions -> Deploy to Cloudflare Pages](../../actions/workflows/deploy.yml) and run Workflow
 
 <img width="1606" alt="Screenshot 2022-12-04 at 4 11 19 PM" src="https://user-images.githubusercontent.com/1719237/205526856-05ea0ff4-703a-4d08-bc7f-4ae2dfc07cfe.png">
