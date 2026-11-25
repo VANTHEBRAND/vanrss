@@ -74,7 +74,7 @@ upload media files, and customize web page styles. If you've used WordPress befo
 Roughly you'll follow these steps to install a vanfeed instance to Cloudflare:
 
 1. Fork the [vanfeed repo](https://github.com/VANTHEBRAND/vanrss) to your personal (or organizational) GitHub account.
-2. Obtain Cloudflare API tokens and save them as secrets on your forked GitHub repository.
+2. Configure a GitHub deployment environment for each Cloudflare environment.
 3. Use the predefined GitHub Action in your forked repository to deploy the code to Cloudflare Pages, using the secrets from step 2.
 4. Make a few clicks on Cloudflare's dashboard to set up custom domains and configure some security settings.
 5. Done. Start publishing!
@@ -99,86 +99,21 @@ you probably will have to. Simply fork the repository and keep it synced for fut
 
 ### Step 2. Put some secrets on your forked repo
 
-Go to your forked repo's [Settings -> Secrets -> Actions](../../settings/secrets/actions), and create 5 secrets (click for more details).
-With these secrets in place, you'll be able to use GitHub Actions to deploy your vanfeed instance to Cloudflare Pages.
+Create `production` and `preview` under **Settings → Environments** in GitHub. For `production`, set **Deployment branches and tags** to **Selected branches and tags**, add only the repository's default branch, and allow no tags. Configure this restriction in GitHub before adding credentials. It protects the environment even when a different ref contains an older or modified workflow. Restrict `preview` to branches whose authors may deploy there.
 
-<details>
-  <summary><b>CLOUDFLARE_ACCOUNT_ID</b></summary>
+Create a separate R2 bucket for each environment. Set its CORS policy to allow your site's origin and the upload methods and headers it needs. Provision the buckets and their CORS rules through the Cloudflare dashboard once. The deployment uses object credentials scoped to that environment's existing bucket.
 
-You can get your cloudflare account id from your dashboard's url:
+Configure the following in **each GitHub environment**.
 
-After you [login your Cloudflare account](https://dash.cloudflare.com/login?lang=en-US), you'll be redirected to a url like this
-```
-https://dash.cloudflare.com/[your-cloudflare-account-id-here]
-```
-The last part of the url is your cloudflare account id.
+| Type | Name | Value |
+| --- | --- | --- |
+| Secret | `PAGES_D1_DEPLOY_TOKEN` | A separate Cloudflare API token with Pages Edit and D1 Edit for the environment's account. Use separate Cloudflare accounts to isolate production when these permissions apply account-wide. |
+| Secret | `R2_OBJECT_ACCESS_KEY_ID`, `R2_OBJECT_SECRET_ACCESS_KEY` | Key pair with Object Read & Write for this environment's bucket only. |
+| Variable | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME` | Account ID and Pages project for this environment. |
+| Variable | `R2_PUBLIC_BUCKET` | Explicit name of this environment's bucket. |
+| Variable | `CF_ACCESS_ISSUER`, `CF_ACCESS_AUD` | Team origin and the admin Access application's audience for this environment. |
 
-For example, if you see a url like this:
-```
-https://dash.cloudflare.com/fff88980eeeeedcc3ffffd4f555f4999
-```
-
-Then you'll set **CLOUDFLARE_ACCOUNT_ID** to **fff88980eeeeedcc3ffffd4f555f4999**:
-
-<img width="846" alt="Screenshot 2022-12-17 at 10 31 10 AM" src="https://user-images.githubusercontent.com/1719237/208216752-56f00f51-29cb-43ea-b720-75244719898d.png">
-</details>
-
-<details>
-  <summary><b>CLOUDFLARE_API_TOKEN</b></summary>
-
-You'll need to create an API token here: [https://dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-
-Create a custom token:
-
-<img width="925" alt="Screenshot 2022-12-04 at 4 30 57 PM" src="https://user-images.githubusercontent.com/1719237/205525627-14da54ae-1733-4db5-b65d-94f5ec48f360.png">
-
-We need edit permission for both Cloudflare Pages and D1:
-
-<img width="990" alt="Screenshot 2022-12-04 at 4 31 41 PM" src="https://user-images.githubusercontent.com/1719237/205525675-4c8a6bce-21a8-45e3-bf0c-28981f123da3.png">
-
-Finally, copy the API token here:
-
-<img width="682" alt="Screenshot 2022-12-04 at 4 34 01 PM" src="https://user-images.githubusercontent.com/1719237/205525785-6fed8e49-7342-4b36-9d07-348e1c28cbcc.png">
-
-
-  </details>
-
-<details>
-  <summary><b>R2_ACCESS_KEY_ID</b> and <b>R2_SECRET_ACCESS_KEY</b></summary>
-
-Go to your [R2 dashboard page](https://dash.cloudflare.com/sign-up/r2). You may need to put your credit card there first. You won't need to pay, unless your usage exceeds the very generous free quota limit (i.e., 10GB storage + 10 million reads/month + 1 million writes/month).
-
-Create an R2 API token here:
-
-  <img width="1328" alt="Screenshot 2022-12-04 at 4 43 58 PM" src="https://user-images.githubusercontent.com/1719237/205526381-cc11d4fe-b053-49d0-9072-de54db31b3b7.png">
-
-Select "Edit" permission and create an API token:
-
-  <img width="849" alt="Screenshot 2022-12-04 at 4 45 18 PM" src="https://user-images.githubusercontent.com/1719237/205526491-79a87e1e-02e0-4268-9f88-7d9cdc6b3b68.png">
-
-Copy Access Key ID for R2_ACCESS_KEY_ID, and Secret Access Key for R2_SECRET_ACCESS_KEY
-  <img width="728" alt="Screenshot 2022-12-04 at 4 45 35 PM" src="https://user-images.githubusercontent.com/1719237/205526582-92f440ac-21c4-46d9-a065-cfc1937391c8.png">
-
-
-</details>
-
-
-<details>
-  <summary><b>CLOUDFLARE_PROJECT_NAME</b></summary>
-
-A legit project name should have these characters: [a-z], [A-Z], [0-9], and -
-
-We recommend using the custom domain name that you'll use for this project and replace dot (.) with dash (-)
-
-For example, if you use photos.mycustomdomain.com, then the project name should be photos-mycustomdomain-com
-
-Note: Don't use underscore (_), space ( ), and other characters outside [a-z], [A-Z], [0-9] and -. Or Cloudflare Pages won't let you create a project.
-</details>
-
-In total, you'll add 5 secrets for GitHub Actions:
-
-<img width="826" alt="Screenshot 2022-12-04 at 4 10 46 PM" src="https://user-images.githubusercontent.com/1719237/205524410-268abf92-af61-467a-8883-78b8d4de3c56.png">
-
+After verifying deployments with the replacement credentials, remove the old repository-wide deploy and R2 secrets and revoke their provider-side credentials. Check organization secrets granted to this repository for the same values. Keep the new secret names exclusively at the environment level. Old workflow revisions can still reference legacy repository secrets while those secrets exist.
 
 ### Step 3. Run GitHub Action to deploy code
 
@@ -252,7 +187,7 @@ If you'd like to submit a fix or new feature, please create a pull request with 
 
 ### Run vanfeed on local
 
-First, create a .vars.toml file in vanfeed's root directory (same level as this README.md file) and put 5 secrets in the .vars.toml file (Similar to [Step 2. Put some secrets on your forked repo](#step-2-put-some-secrets-on-your-forked-repo)):
+First, create a .vars.toml file in vanfeed's root directory (same level as this README.md file) and configure local settings in the .vars.toml file (Similar to [Step 2. Put some secrets on your forked repo](#step-2-put-some-secrets-on-your-forked-repo)):
 ```toml
 # .vars.toml
 CLOUDFLARE_PROJECT_NAME = "your-project-org"

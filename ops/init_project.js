@@ -1,108 +1,48 @@
 const https = require('https');
-
 const {VarsReader} = require('./lib/utils');
 
-class InitProject {
-  constructor() {
-    this.currentEnv = 'production';
-    this.v = new VarsReader(this.currentEnv);
-  }
+const environment = process.env.DEPLOYMENT_ENVIRONMENT || 'production';
+const vars = new VarsReader(environment);
+const project = vars.get('CLOUDFLARE_PROJECT_NAME');
+const projectsPath = `/client/v4/accounts/${vars.get('CLOUDFLARE_ACCOUNT_ID')}/pages/projects`;
 
-  _getCurrentProject(data, onProjectExists, onCreateProject) {
-
-    const options = {
-      port: 443,
+function requestProject(method, path, payload) {
+  return new Promise((resolve, reject) => {
+    const request = https.request({
       hostname: 'api.cloudflare.com',
-      path: `/client/v4/accounts/${this.v.get('CLOUDFLARE_ACCOUNT_ID')}/pages/projects/${this.v.get('CLOUDFLARE_PROJECT_NAME')}`,
+      path,
+      method,
       headers: {
-        'Authorization': `Bearer ${this.v.get('CLOUDFLARE_API_TOKEN')}`,
+        Authorization: `Bearer ${vars.get('CLOUDFLARE_API_TOKEN')}`,
         'Content-Type': 'application/json',
       },
-      method: 'GET',
-    };
-
-    https.get(options, (res) => {
-      if (res.statusCode === 404) {
-        onCreateProject();
-        return;
-      }
-      // console.log('headers:', res.headers);
-
-      let body = '';
-      res.on('data', (d) => {
-        body += d;
-      });
-      res.on('end', function () {
-        try {
-          let json = JSON.parse(body);
-          onProjectExists(json);
-        } catch (error) {
-          console.error(error.message);
-          process.exit(1);
-        }
-      });
-    }).on('error', (e) => {
-      console.error(e);
+    }, response => {
+      response.resume();
+      response.on('end', () => resolve(response.statusCode));
+      response.on('error', () => reject(new Error('Could not read Cloudflare response')));
     });
-  }
-
-  _createProject(data, onSuccess) {
-    const options = {
-      hostname: 'api.cloudflare.com',
-      port: 443,
-      path: `/client/v4/accounts/${this.v.get('CLOUDFLARE_ACCOUNT_ID')}/pages/projects/`,
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.v.get('CLOUDFLARE_API_TOKEN')}`,
-        'Content-Type': 'application/json',
-        'Content-Length': data.length,
-      },
-    };
-
-    const req = https.request(options, (res) => {
-      let body = '';
-      res.on('data', (d) => {
-        body += d;
-      });
-      res.on("end", () => {
-        try {
-          let json = JSON.parse(body);
-          onSuccess(json);
-        } catch (error) {
-          console.error(error.message);
-          process.exit(1);
-        }
-      });
-    });
-
-    req.on('error', (e) => {
-      console.error(e);
-      process.exit(1);
-    });
-    req.write(data)
-    req.end();
-  }
-
-  run() {
-    console.log(`Init project ${this.v.get('CLOUDFLARE_PROJECT_NAME')} [${this.currentEnv}]...`);
-    this._getCurrentProject({}, (json) => {
-      console.log('got it!');
-      console.log(`${this.v.get('CLOUDFLARE_PROJECT_NAME')} exists.`);
-      console.log(json);
-    }, () => {
-      console.log('creating!')
-      console.log(`Creating project: ${this.v.get('CLOUDFLARE_PROJECT_NAME')}...`)
-      const data = JSON.stringify({
-        'subdomain': this.v.get('CLOUDFLARE_PROJECT_NAME'),
-        'production_branch': this.v.get('PRODUCTION_BRANCH', 'main'),
-        'name': this.v.get('CLOUDFLARE_PROJECT_NAME'),
-      });
-      this._createProject(data, () => {
-        console.log('Project created!')
-      });
-    });
-  }
+    request.on('error', () => reject(new Error('Cloudflare request failed')));
+    request.end(payload);
+  });
 }
 
-const initProject = new InitProject();
-initProject.run();
+async function ensureProject() {
+  const lookup = await requestProject('GET', `${projectsPath}/${project}`);
+  if (lookup === 200) {
+    console.log('Cloudflare Pages project exists.');
+    return;
+  }
+  if (lookup !== 404) throw new Error(`Cloudflare Pages lookup failed (HTTP ${lookup})`);
+  const created = await requestProject('POST', projectsPath, JSON.stringify({
+    subdomain: project,
+    production_branch: vars.get('PRODUCTION_BRANCH', 'main'),
+    name: project,
+  }));
+  if (created < 200 || created >= 300) throw new Error(`Cloudflare Pages project creation failed (HTTP ${created})`);
+  console.log('Cloudflare Pages project created.');
+}
+
+ensureProject().catch(error => {
+  console.error(error.message);
+  process.exitCode = 1;
+});

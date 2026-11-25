@@ -8,7 +8,7 @@
         "setup:development": "yarn install && node ops/generate_local_vars.js && node ops/init_feed_db.js",
         "setup:production": "sh ops/generate_vars_toml.sh && yarn install && node ops/init_r2.js && node ops/init_feed_db.js && node ops/init_project.js",
         "deploy:cloudflare": "node ops/sync_project_config.js && yarn build:production",
-        "deploy:github": "node ops/sync_project_config.js && node ops/direct_upload.js",
+        "deploy:github": "yarn build:production && node ops/sync_project_config.js && node ops/direct_upload.js",
         "test": "jest"
     },
     "dependencies": {

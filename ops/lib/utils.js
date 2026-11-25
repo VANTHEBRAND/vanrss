@@ -1,6 +1,7 @@
 const fs = require('fs');
 const toml = require('toml');
 const https = require('https');
+const {spawnSync} = require('child_process');
 
 class VarsReader {
   constructor(currentEnv, varsFilePath = '.vars.toml') {
@@ -30,21 +31,22 @@ class WranglerCmd {
     this.v = new VarsReader(currentEnv);
   }
 
-  _getCmd(wranglerCmd) {
-    return `CLOUDFLARE_ACCOUNT_ID=${this.v.get('CLOUDFLARE_ACCOUNT_ID')} ` +
-      `CLOUDFLARE_API_TOKEN=${this.v.get('CLOUDFLARE_API_TOKEN')} ` + wranglerCmd;
+  runWrangler(args) {
+    const result = spawnSync('wrangler', args, {
+      env: {
+        ...process.env,
+        CLOUDFLARE_ACCOUNT_ID: this.v.get('CLOUDFLARE_ACCOUNT_ID') || '',
+        CLOUDFLARE_API_TOKEN: this.v.get('CLOUDFLARE_API_TOKEN') || '',
+      },
+      stdio: 'ignore',
+    });
+    if (result.status !== 0) throw new Error(`Wrangler ${args.slice(0, 2).join(' ')} failed`);
   }
 
   publishProject() {
-    const projectName = this.v.get('CLOUDFLARE_PROJECT_NAME');
     const productionBranch = this.v.get('PRODUCTION_BRANCH', 'main');
-
-    // Cloudflare Pages direct upload uses branch to decide deployment environment.
-    // If we want production, then use production_branch. Otherwise, just something else
     const branch = this.currentEnv === 'production' ? productionBranch : `${productionBranch}-preview`;
-    const wranglerCmd = `wrangler pages publish public --project-name ${projectName} --branch ${branch}`;
-    console.log(wranglerCmd);
-    return this._getCmd(wranglerCmd);
+    this.runWrangler(['pages', 'publish', 'public', '--project-name', this.v.get('CLOUDFLARE_PROJECT_NAME'), '--branch', branch]);
   }
 
   _non_dev_db() {
@@ -52,17 +54,12 @@ class WranglerCmd {
   }
 
   createFeedDb() {
-    const wranglerCmd = this.currentEnv !== 'development' ?
-      `wrangler d1 create ${this._non_dev_db()}` : 'echo "FEED_DB"';
-    console.log(wranglerCmd);
-    return this._getCmd(wranglerCmd);
+    this.runWrangler(['d1', 'create', this._non_dev_db()]);
   }
 
   createFeedDbTables() {
-    const dbName = this.currentEnv !== 'development' ? this._non_dev_db() : 'FEED_DB --local';
-    const wranglerCmd = `wrangler d1 execute ${dbName} --file ops/db/init.sql`;
-    console.log(wranglerCmd);
-    return this._getCmd(wranglerCmd);
+    const target = this.currentEnv === 'development' ? ['FEED_DB', '--local'] : [this._non_dev_db()];
+    this.runWrangler(['d1', 'execute', ...target, '--file', 'ops/db/init.sql']);
   }
 
   /**
@@ -89,21 +86,21 @@ class WranglerCmd {
       });
 
       response.on('end', () => {
-        const body = JSON.parse(data);
-        let databaseId = '';
-        body.result.forEach((result) => {
-          if (result.name === dbName) {
-            databaseId = result.uuid;
-          }
-        });
-        onSuccess(databaseId);
+        let body;
+        try {
+          body = JSON.parse(data);
+        } catch {
+          throw new Error('Invalid Cloudflare D1 response');
+        }
+        if (response.statusCode !== 200 || !body.success || !Array.isArray(body.result)) {
+          throw new Error(`Cloudflare D1 lookup failed (HTTP ${response.statusCode})`);
+        }
+        const database = body.result.find(result => result.name === dbName);
+        onSuccess(database ? database.uuid : '');
       });
     })
 
-    request.on('error', (error) => {
-      console.log('An error', error);
-      onSuccess('');
-    });
+    request.on('error', () => { throw new Error('Cloudflare D1 lookup failed'); });
 
     request.end();
   }

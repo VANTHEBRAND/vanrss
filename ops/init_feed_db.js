@@ -1,26 +1,12 @@
-const {exec} = require('child_process');
-const {WranglerCmd} = require("./lib/utils");
+const {WranglerCmd} = require('./lib/utils');
 
-const cmd = new WranglerCmd(process.env.DEPLOYMENT_ENVIRONMENT || 'development');
-exec(cmd.createFeedDb(), (error, stdout, stderr) => {
-  if (error) {
-    console.log(`error: ${error.message}`);
-  }
-  if (stderr) {
-    console.log(`stderr: ${stderr}`);
-  }
-  if (stdout) {
-    console.log(`stdout: ${stdout}`);
-  }
-  exec(cmd.createFeedDbTables(), (error, stdout, stderr) => {
-    if (error) {
-      console.log(`error: ${error.message}`);
-    }
-    if (stderr) {
-      console.log(`stderr: ${stderr}`);
-    }
-    if (stdout) {
-      console.log(`stdout: ${stdout}`);
-    }
+const environment = process.env.DEPLOYMENT_ENVIRONMENT || 'development';
+const cmd = new WranglerCmd(environment);
+if (environment === 'development') {
+  cmd.createFeedDbTables();
+} else {
+  cmd.getDatabaseId((databaseId) => {
+    if (!databaseId) cmd.createFeedDb();
+    cmd.createFeedDbTables();
   });
-});
+}
